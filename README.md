@@ -11,7 +11,7 @@ Sistema web completo para gestão imobiliária com autenticação Keycloak, back
 - Spring Data JPA
 - PostgreSQL
 - Keycloak 22.x
-- Maven
+- Gradle
 
 ### Frontend
 - React 18
@@ -49,13 +49,59 @@ O único pré-requisito para executar o projeto é ter o Docker Desktop instalad
 4. Aguarde alguns minutos até todos os serviços iniciarem
    - O processo pode ser mais demorado na primeira execução
 
-5. Acesse as aplicações:
+5. Configure e inicie o backend:
+   ```bash
+   cd backend
+   
+   # Configure o application.yml
+   echo "spring:
+     datasource:
+       url: jdbc:postgresql://localhost:5432/userdb
+       username: postgres
+       password: postgres
+     jpa:
+       hibernate:
+         ddl-auto: update
+     security:
+       oauth2:
+         resourceserver:
+           jwt:
+             issuer-uri: http://localhost:8180/realms/my-realm
+   
+   server:
+     port: 8081" > src/main/resources/application.yml
+   
+   # Execute o backend
+   # Para Windows:
+   ./gradlew.bat bootRun
+   # Para Linux/Mac:
+   # ./gradlew bootRun
+   ```
+
+6. Configure e inicie o frontend:
+   ```bash
+   cd frontend
+   npm install
+   
+   # Crie o arquivo .env com as configurações
+   echo "VITE_KEYCLOAK_URL=http://localhost:8180
+   VITE_KEYCLOAK_REALM=my-realm
+   VITE_KEYCLOAK_CLIENT_ID=frontend-client
+   VITE_API_URL=http://localhost:8081
+   VITE_APP_URL=http://localhost:5173" > .env
+   
+   # Inicie o frontend
+   npm run dev
+   ```
+
+7. Acesse as aplicações:
    - Frontend: http://localhost:5173
+   - Backend: http://localhost:8081
    - Keycloak Admin: http://localhost:8180
      - Usuário: admin
      - Senha: admin
 
-6. Para encerrar os serviços:
+8. Para encerrar os serviços:
    ```bash
    docker-compose down
    ```
@@ -70,7 +116,7 @@ O único pré-requisito para executar o projeto é ter o Docker Desktop instalad
 │   │   │   ├── java/      # Código fonte Java
 │   │   │   └── resources/ # Configurações
 │   │   └── test/          # Testes
-│   └── pom.xml            # Dependências Maven
+│   └── build.gradle        # Dependências Gradle
 │
 ├── frontend/               # Projeto React
 │   ├── src/
