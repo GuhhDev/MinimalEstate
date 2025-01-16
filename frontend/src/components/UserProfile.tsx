@@ -26,27 +26,11 @@ export const UserProfile: React.FC = () => {
         handleClose();
     };
 
-    if (!isAuthenticated) {
-        return (
-            <Button
-                variant="outlined"
-                color="primary"
-                onClick={login}
-                size="small"
-                sx={{
-                    borderRadius: 20,
-                    textTransform: 'none',
-                    minWidth: 100
-                }}
-            >
-                Entrar
-            </Button>
-        );
-    }
-
     return (
         <>
-            <IconButton
+        {
+            isAuthenticated && (
+                <IconButton
                 onClick={handleMenu}
                 size="small"
                 sx={{ padding: 0 }}
@@ -64,6 +48,9 @@ export const UserProfile: React.FC = () => {
                     {!avatarUrl && displayName?.[0]?.toUpperCase()}
                 </Avatar>
             </IconButton>
+            )
+        }
+            
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
