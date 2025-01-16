@@ -23,8 +23,20 @@ Sistema web completo para gestão imobiliária com autenticação Keycloak, back
 
 ## Pré-requisitos
 
-O único pré-requisito para executar o projeto é ter o Docker Desktop instalado:
-- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+2. Java Development Kit (JDK) 17:
+   - Baixe e instale o [Eclipse Temurin JDK 17](https://adoptium.net/temurin/releases/?version=17)
+   - Configure a variável de ambiente JAVA_HOME:
+     ```bash
+     # No Windows (PowerShell Admin):
+     setx JAVA_HOME "C:\Program Files\Eclipse Adoptium\jdk-17.x.x.x-hotspot" /M
+     setx PATH "%PATH%;%JAVA_HOME%\bin" /M
+     
+     # Verifique a instalação:
+     java -version
+     echo %JAVA_HOME%
+     ```
 
 ## Como Executar
 
@@ -71,11 +83,15 @@ O único pré-requisito para executar o projeto é ter o Docker Desktop instalad
    server:
      port: 8081" > src/main/resources/application.yml
    
-   # Execute o backend
+   # Execute o backend # pode demorar alguns minutos na primeira execução
    # Para Windows:
-   ./gradlew.bat bootRun
+   ./gradlew.bat bootRun --info --stacktrace  # Aguarde até ver "Started ImobiliariaApplication in X seconds"
+                                             # A aplicação continuará rodando (não feche o terminal)
+   
    # Para Linux/Mac:
-   # ./gradlew bootRun
+   ./gradlew bootRun --info --stacktrace
+   
+   # Abra um novo terminal para os próximos comandos, mantenha este rodando
    ```
 
 6. Configure e inicie o frontend:
@@ -161,7 +177,21 @@ O único pré-requisito para executar o projeto é ter o Docker Desktop instalad
    - Verifique se o Docker Desktop está em execução
    - Tente reiniciar o Docker Desktop
 
-4. **Erro: Script do Keycloak falha**
+4. **Erro: Gradle não executa**
+   - Verifique se o Java está instalado: `java -version`
+   - Verifique se JAVA_HOME está configurado: `echo %JAVA_HOME%`
+   - Certifique-se que está usando Java 17
+   - Tente executar: `java -version` para confirmar que o Java está no PATH
+
+5. **Tempo de Execução**
+   - Primeira execução do Gradle: 5-10 minutos (download de dependências)
+   - Execuções posteriores: 15-30 segundos
+   - Se demorar mais que isso, verifique:
+     - Conexão com a internet (para download das dependências)
+     - Se o Docker está consumindo muita memória
+     - Se há outros processos pesados rodando
+
+6. **Erro: Script do Keycloak falha**
    - Verifique se o PowerShell está instalado
    - Aguarde alguns segundos e tente novamente, pois o Keycloak pode ainda estar iniciando
 
