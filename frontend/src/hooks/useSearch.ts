@@ -1,76 +1,50 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Property, propertyService } from '@/services/propertyService';
+import { Property } from 'types/Property';
+import { propertyService } from '@/services/propertyService';
+import { PropertyType } from "types/PropertyType";
 
 export interface SearchFilters {
-  minPrice?: number;
-  maxPrice?: number;
-  bedrooms?: number;
-  location?: string;
-  type?: string;
-  featured?: boolean;
+  query?: string;
+  type?: PropertyType | undefined;
+  priceMin?: string;
+  priceMax?: string;
+  rooms?: string;
 }
 
 export const useSearch = (initialFilters: SearchFilters = {}) => {
-  const [query, setQuery] = useState('');
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
   const [results, setResults] = useState<Property[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const searchProperties = useCallback(async () => {
+  const search = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
     try {
-      setLoading(true);
-      setError(null);
-
-      // Se tiver query, usa a busca por texto
-      if (query.trim()) {
-        const searchResults = await propertyService.search(query);
+      if (filters.query) {
+        const searchResults = await propertyService.searchProperties(filters.query);
         setResults(searchResults);
-        return;
+      } else {
+        const filterResults = await propertyService.getAll({
+          type: filters.type,
+          priceMin: filters.priceMin ? Number(filters.priceMin) : undefined,
+          priceMax: filters.priceMax ? Number(filters.priceMax) : undefined,
+          rooms: filters.rooms ? Number(filters.rooms) : undefined  
+        });
+        setResults(filterResults);
       }
-
-      // Se não tiver query, usa os filtros
-      const filterResults = await propertyService.getAll({
-        ...filters,
-        minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
-        maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
-        bedrooms: filters.bedrooms ? Number(filters.bedrooms) : undefined,
-      });
-      setResults(filterResults);
     } catch (err) {
-      setError('Erro ao buscar imóveis. Tente novamente.');
-      console.error('Erro na busca:', err);
+      setError(err instanceof Error ? err.message : 'Erro ao buscar imóveis');
+      setResults([]);
     } finally {
       setLoading(false);
     }
-  }, [query, filters]);
+  }, [filters]);
 
-  // Debounce para a busca
   useEffect(() => {
-    const timer = setTimeout(() => {
-      searchProperties();
-    }, 500); // Aguarda 500ms após a última alteração
+    search();
+  }, [search]);
 
-    return () => clearTimeout(timer);
-  }, [searchProperties]);
-
-  const updateFilters = (newFilters: Partial<SearchFilters>) => {
-    setFilters(prev => ({ ...prev, ...newFilters }));
-  };
-
-  const clearFilters = () => {
-    setFilters({});
-    setQuery('');
-  };
-
-  return {
-    query,
-    setQuery,
-    filters,
-    updateFilters,
-    clearFilters,
-    results,
-    loading,
-    error
-  };
+  return { filters, setFilters, results, loading, error, search };
 };

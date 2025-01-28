@@ -1,68 +1,70 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import Input from '@/components/ui/Input';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Property } from 'types/Property';
 import SearchDropdown from '@/components/SearchDropdown';
-import { useSearch } from '@/hooks/useSearch';
-import { SearchContainer } from './styles';
+import { SearchContainer, SearchInput, SearchButton } from './styles';
+import { IoSearch } from 'react-icons/io5';
 
 interface SearchProps {
   placeholder?: string;
-  fullWidth?: boolean;
+  onSearch?: (query: string) => void;
 }
 
-const Search: React.FC<SearchProps> = ({
-  placeholder = 'Buscar imóveis...',
-  fullWidth = false
-}) => {
+const Search: React.FC<SearchProps> = ({ placeholder = 'Buscar imóveis...', onSearch }) => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [results, setResults] = useState<Property[]>([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
-  const {
-    query,
-    setQuery,
-    results,
-    loading,
-    error
-  } = useSearch();
 
-  // Fecha o dropdown quando clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsDropdownVisible(false);
+  const handleSearch = async (value: string) => {
+    setSearchQuery(value);
+
+    if (!value.trim()) {
+      setResults([]);
+      setIsDropdownVisible(false);
+      return;
+    }
+
+    try {
+      if (onSearch) {
+        onSearch(value);
       }
-    };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    setIsDropdownVisible(true);
+      const response = await fetch(`/api/imoveis/search?q=${encodeURIComponent(value)}`);
+      if (!response.ok) {
+        throw new Error('Falha ao buscar imóveis');
+      }
+      const data = await response.json();
+      setResults(data);
+      setIsDropdownVisible(true);
+    } catch (error) {
+      console.error('Erro ao buscar imóveis:', error);
+      setResults([]);
+    }
   };
 
-  const handleDropdownSelect = () => {
+  const handleSelect = (property: Property) => {
     setIsDropdownVisible(false);
-    setQuery('');
+    navigate(`/imoveis/${property.id}`);
   };
 
   return (
-    <SearchContainer ref={searchRef}>
-      <Input
+    <SearchContainer>
+      <SearchInput
+        type="text"
         placeholder={placeholder}
-        icon={<FaSearch />}
-        value={query}
-        onChange={handleInputChange}
-        onFocus={() => setIsDropdownVisible(true)}
-        fullWidth={fullWidth}
+        value={searchQuery}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
       />
-      <SearchDropdown
-        results={results}
-        loading={loading}
-        error={error}
-        visible={isDropdownVisible}
-        onSelect={handleDropdownSelect}
-      />
+      <SearchButton type="button" onClick={() => handleSearch(searchQuery)}>
+        <IoSearch />
+      </SearchButton>
+      {isDropdownVisible && (
+        <SearchDropdown
+          properties={results}
+          onSelect={handleSelect}
+        />
+      )}
     </SearchContainer>
   );
 };

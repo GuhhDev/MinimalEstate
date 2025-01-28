@@ -1,135 +1,119 @@
 import styled from 'styled-components';
 
-export const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const Container = styled.div`
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: 16px;
-  padding: ${({ theme }) => theme.spacing.xl};
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
+export const FilterContainer = styled.div`
   position: relative;
+  width: 95%;
+  max-width: 500px;
+  margin: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-export const Header = styled.div`
+export const FilterHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-
-  h2 {
-    font-size: 1.5rem;
-    color: ${({ theme }) => theme.colors.text};
-  }
-
-  button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: ${({ theme }) => theme.colors.textLight};
-    transition: color 0.2s;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.text};
-    }
-  }
+  margin-bottom: 20px;
 `;
 
-export const FilterSection = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-
-  h3 {
-    font-size: 1.1rem;
-    color: ${({ theme }) => theme.colors.text};
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
-  }
-`;
-
-export const RangeInputs = styled.div`
+export const CloseButton = styled.button`
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #666;
   display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
+  align-items: center;
+  justify-content: center;
 
-  input {
-    flex: 1;
-    height: 40px;
-    padding: 0 ${({ theme }) => theme.spacing.sm};
-    border: 1px solid ${({ theme }) => theme.colors.border};
-    border-radius: 8px;
-    font-size: 1rem;
+  &:hover {
+    color: #333;
+  }
 
-    &:focus {
-      border-color: ${({ theme }) => theme.colors.primary};
-      outline: none;
-    }
+  svg {
+    width: 20px;
+    height: 20px;
   }
 `;
 
-export const FeatureGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: ${({ theme }) => theme.spacing.sm};
+export const FilterForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
 
-  label {
-    display: flex;
-    align-items: center;
-    gap: ${({ theme }) => theme.spacing.xs};
-    cursor: pointer;
-    padding: ${({ theme }) => theme.spacing.xs};
-    border-radius: 4px;
-    transition: background-color 0.2s;
+export const FilterGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
 
-    &:hover {
-      background-color: ${({ theme }) => theme.colors.backgroundLight};
-    }
+export const Label = styled.label`
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: #0066cc;
+  }
+`;
+
+export const Select = styled.select`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+
+  &:focus {
+    outline: none;
+    border-color: #0066cc;
   }
 `;
 
 export const ButtonGroup = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
-  margin-top: ${({ theme }) => theme.spacing.xl};
+  gap: 12px;
+  margin-top: 20px;
+`;
 
-  button {
-    flex: 1;
-    height: 48px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.2s;
+export const Button = styled.button`
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+`;
 
-    &.clear {
-      background: none;
-      border: 1px solid ${({ theme }) => theme.colors.border};
-      color: ${({ theme }) => theme.colors.text};
+export const ClearButton = styled(Button)`
+  background: #f5f5f5;
+  color: #666;
 
-      &:hover {
-        background: ${({ theme }) => theme.colors.backgroundLight};
-      }
-    }
+  &:hover {
+    background: #e1e1e1;
+  }
+`;
 
-    &.apply {
-      background: ${({ theme }) => theme.colors.primary};
-      border: none;
-      color: ${({ theme }) => theme.colors.white};
+export const ApplyButton = styled(Button)`
+  background: #0066cc;
+  color: white;
 
-      &:hover {
-        background: ${({ theme }) => theme.colors.primaryDark};
-      }
-    }
+  &:hover {
+    background: #0052a3;
   }
 `;

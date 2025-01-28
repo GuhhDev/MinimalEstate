@@ -16,8 +16,6 @@ export const HeaderContent = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
-  max-width: 1400px;
-  margin: 0 auto;
 `;
 
 export const Logo = styled(Link)`

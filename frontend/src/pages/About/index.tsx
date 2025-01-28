@@ -1,39 +1,13 @@
 import React from 'react';
-import styled from 'styled-components';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-
-const Container = styled.div`
-  padding: 80px 20px 40px;
-  max-width: 800px;
-  margin: 0 auto;
-`;
-
-const Content = styled.div`
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  h1 {
-    color: ${({ theme }) => theme.colors.primary};
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  p {
-    color: ${({ theme }) => theme.colors.secondary};
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-`;
+import * as S from './styles';
 
 const About: React.FC = () => {
   return (
     <>
       <Header />
-      <Container>
-        <Content>
+      <S.Container>
+        <S.Content>
           <h1>Sobre a MinimalEstate</h1>
           <p>
             Somos uma imobiliária moderna e inovadora, focada em proporcionar a melhor
@@ -53,8 +27,8 @@ const About: React.FC = () => {
             solução para você, seja na compra do seu primeiro imóvel ou na
             realização do sonho da casa própria.
           </p>
-        </Content>
-      </Container>
+        </S.Content>
+      </S.Container>
     </>
   );
 };

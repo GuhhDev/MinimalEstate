@@ -1,46 +1,32 @@
 import React from 'react';
-import { StyledTypography } from './styles';
-import { TypographyProps, TypographyVariant } from './types';
+import { Text } from './styles';
+import { TypographyProps } from './types';
 
 const Typography: React.FC<TypographyProps> = ({
-  children,
-  variant = 'body1',
-  weight = 'regular',
+  variant,
+  weight,
   align = 'left',
   color,
+  marginBottom,
   as,
+  children,
   ...props
 }) => {
   // Define o elemento HTML apropriado com base na variante, se não for especificado
-  const getDefaultElement = () => {
-    const elements: Record<TypographyVariant, keyof JSX.IntrinsicElements> = {
-      h1: 'h1',
-      h2: 'h2',
-      h3: 'h3',
-      h4: 'h4',
-      h5: 'h5',
-      h6: 'h6',
-      body1: 'p',
-      body2: 'p',
-      caption: 'span',
-      subtitle: 'p',
-      overline: 'span',
-      button: 'span'
-    };
-    return elements[variant];
-  };
+  const Component = as || (variant.startsWith('h') ? variant : 'p');
 
   return (
-    <StyledTypography
-      as={as || getDefaultElement()}
+    <Text
+      as={Component}
       variant={variant}
       weight={weight}
       align={align}
       color={color}
+      marginBottom={marginBottom}
       {...props}
     >
       {children}
-    </StyledTypography>
+    </Text>
   );
 };
 

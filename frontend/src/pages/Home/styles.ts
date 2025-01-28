@@ -15,7 +15,7 @@ export const HeroSection = styled.section`
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url('/images/hero-bg.jpg') center/cover no-repeat;
   margin-top: 60px;
-  padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.xl};
+  padding: ${({ theme }) => theme.spacing.xxl} 0; 
   text-align: center;
   color: ${({ theme }) => theme.colors.white};
 
@@ -25,8 +25,8 @@ export const HeroSection = styled.section`
     font-size: 3rem;
 
     @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-      font-size: 2rem;
-    }
+    font-size: 2rem;
+  }
   }
 
   p {
@@ -37,11 +37,14 @@ export const HeroSection = styled.section`
 `;
 
 export const PropertiesSection = styled.section`
-  padding: ${({ theme }) => theme.spacing.xxl} 0;
+  width: 100%;
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 export const PropertiesGrid = styled.div`
+  width: 100%;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: ${({ theme }) => theme.spacing.xl};

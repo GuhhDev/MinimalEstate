@@ -10,7 +10,6 @@ import {
   NavLink
 } from './styles';
 import Typography from '@/components/ui/Typography';
-import Button from '@/components/ui/Button';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +33,8 @@ const Header: React.FC = () => {
     { path: '/', label: 'Início' },
     { path: '/imoveis', label: 'Imóveis' },
     { path: '/sobre', label: 'Sobre' },
-    { path: '/contato', label: 'Contato' }
+    { path: '/contato', label: 'Contato' },
+    { path: '/anunciar', label: 'Anunciar' }
   ];
 
   return (
@@ -62,9 +62,6 @@ const Header: React.FC = () => {
               </Typography>
             </NavLink>
           ))}
-          <Button variant="primary" size="small">
-            Anunciar Imóvel
-          </Button>
         </Nav>
 
         <MenuButton onClick={() => setIsOpen(!isOpen)}>

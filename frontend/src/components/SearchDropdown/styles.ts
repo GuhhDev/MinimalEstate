@@ -2,91 +2,69 @@ import styled from 'styled-components';
 
 export const DropdownContainer = styled.div`
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: ${({ theme }) => theme.colors.white};
+  background: ${({ theme }) => theme.colors.background};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-height: 400px;
   overflow-y: auto;
   z-index: 1000;
-  margin-top: ${({ theme }) => theme.spacing.sm};
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.background};
-    border-radius: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary};
-    border-radius: 8px;
-    
-    &:hover {
-      background: ${({ theme }) => theme.colors.secondary};
-    }
-  }
 `;
 
-export const ResultItem = styled.div`
-  display: flex;
-  padding: ${({ theme }) => theme.spacing.md};
-  gap: ${({ theme }) => theme.spacing.md};
+export const DropdownItem = styled.div`
+  padding: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid ${({ theme }) => theme.colors.background};
-  }
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.background};
+    background-color: ${({ theme }) => theme.colors.backgroundAlt};
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   }
 `;
 
-export const ResultImage = styled.div`
-  width: 100px;
-  height: 80px;
-  flex-shrink: 0;
-  border-radius: 4px;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+export const PropertyTitle = styled.h4`
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
-export const ResultContent = styled.div`
-  flex: 1;
-  min-width: 0;
+export const PropertyInfo = styled.p`
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.colors.textLight};
 `;
 
-export const IconText = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xs};
-  
-  svg {
-    color: ${({ theme }) => theme.colors.secondary};
-    font-size: 14px;
-  }
+export const LoadingText = styled.p`
+  padding: 1rem;
+  margin: 0;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.textLight};
 `;
 
-export const Price = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.sm};
+export const ErrorText = styled.p`
+  padding: 1rem;
+  margin: 0;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.error};
+`;
+
+export const NoResultsText = styled.p`
+  padding: 1rem;
+  margin: 0;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.textLight};
 `;
 
 export const NoResults = styled.div`
-  padding: ${({ theme }) => theme.spacing.xl};
+  padding: 16px;
   text-align: center;
-`;
-
-export const LoadingText = styled(NoResults)`
-  color: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.textLight};
+  font-size: 0.875rem;
 `;

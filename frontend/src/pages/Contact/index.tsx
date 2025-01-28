@@ -1,70 +1,6 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-
-const Container = styled.div`
-  padding: 80px 20px 40px;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const ContactForm = styled.form`
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  h1 {
-    color: ${({ theme }) => theme.colors.primary};
-    margin-bottom: 20px;
-    text-align: center;
-  }
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 20px;
-
-  label {
-    display: block;
-    margin-bottom: 5px;
-    color: ${({ theme }) => theme.colors.primary};
-  }
-
-  input, textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid ${({ theme }) => theme.colors.accent};
-    border-radius: 4px;
-    font-size: 16px;
-
-    &:focus {
-      outline: none;
-      border-color: ${({ theme }) => theme.colors.secondary};
-    }
-  }
-
-  textarea {
-    min-height: 120px;
-    resize: vertical;
-  }
-`;
-
-const Button = styled.button`
-  background: ${({ theme }) => theme.colors.primary};
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  transition: background 0.2s;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.secondary};
-  }
-`;
+import * as S from './styles';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -76,7 +12,6 @@ const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui você pode implementar o envio do formulário para o backend
     console.log('Dados do formulário:', formData);
     alert('Mensagem enviada com sucesso!');
   };
@@ -92,10 +27,9 @@ const Contact: React.FC = () => {
   return (
     <>
       <Header />
-      <Container>
-        <ContactForm onSubmit={handleSubmit}>
-          <h1>Entre em Contato</h1>
-          <FormGroup>
+      <S.Container>
+        <S.ContactForm onSubmit={handleSubmit}>
+          <S.FormGroup>
             <label>Nome</label>
             <input
               type="text"
@@ -104,8 +38,8 @@ const Contact: React.FC = () => {
               onChange={handleChange}
               required
             />
-          </FormGroup>
-          <FormGroup>
+          </S.FormGroup>
+          <S.FormGroup>
             <label>E-mail</label>
             <input
               type="email"
@@ -114,8 +48,8 @@ const Contact: React.FC = () => {
               onChange={handleChange}
               required
             />
-          </FormGroup>
-          <FormGroup>
+          </S.FormGroup>
+          <S.FormGroup>
             <label>Telefone</label>
             <input
               type="tel"
@@ -124,8 +58,8 @@ const Contact: React.FC = () => {
               onChange={handleChange}
               required
             />
-          </FormGroup>
-          <FormGroup>
+          </S.FormGroup>
+          <S.FormGroup>
             <label>Mensagem</label>
             <textarea
               name="message"
@@ -133,10 +67,10 @@ const Contact: React.FC = () => {
               onChange={handleChange}
               required
             />
-          </FormGroup>
-          <Button type="submit">Enviar Mensagem</Button>
-        </ContactForm>
-      </Container>
+          </S.FormGroup>
+          <S.Button type="submit">Enviar Mensagem</S.Button>
+        </S.ContactForm>
+      </S.Container>
     </>
   );
 };

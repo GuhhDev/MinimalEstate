@@ -1,18 +1,18 @@
 package com.imobiliaria.model;
 
+import com.imobiliaria.enums.Feature;
+import com.imobiliaria.enums.PropertyStatus;
+import com.imobiliaria.enums.PropertyType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "properties")
 public class Property {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,47 +20,60 @@ public class Property {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String address;
+    private PropertyType type;
 
     @Column(nullable = false)
-    private BigDecimal price;
-
-    @Column(name = "square_meters", nullable = false)
-    private Double squareMeters;
+    private Double price;
 
     @Column(nullable = false)
+    private Double area;
+
     private Integer bedrooms;
 
-    @Column(nullable = false)
     private Integer bathrooms;
 
-    @Column(name = "parking_spaces")
     private Integer parkingSpaces;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    @ElementCollection
+    @CollectionTable(name = "property_features", 
+        joinColumns = @JoinColumn(name = "property_id"))
+    @Column(name = "feature")
+    @Enumerated(EnumType.STRING)
+    private List<Feature> features;
+
+    @ElementCollection
+    @CollectionTable(name = "property_images",
+        joinColumns = @JoinColumn(name = "property_id"))
+    @Column(name = "url")
+    private List<String> imageUrls;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type; // HOUSE, APARTMENT, COMMERCIAL, etc.
+    private PropertyStatus status;
 
-    @Column(name = "is_available", nullable = false)
-    private Boolean isAvailable = true;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private java.time.LocalDateTime createdAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private java.time.LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = java.time.LocalDateTime.now();
-        updatedAt = createdAt;
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = java.time.LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

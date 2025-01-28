@@ -1,28 +1,34 @@
-import React, { lazy } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import ErrorBoundary from '@/components/ErrorBoundary';
-import DefaultLayout from '@/layouts/DefaultLayout';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
+import ErrorBoundary from './components/ErrorBoundary';
+import DefaultLayout from './layouts/DefaultLayout';
 
 // Lazy loading das páginas
-const Home = lazy(() => import('@/pages/Home'));
-const Properties = lazy(() => import('@/pages/Properties'));
-const PropertyDetails = lazy(() => import('@/pages/PropertyDetails'));
-const About = lazy(() => import('@/pages/About'));
-const Contact = lazy(() => import('@/pages/Contact'));
+const Home = React.lazy(() => import('./pages/Home'));
+const Properties = React.lazy(() => import('./pages/Properties'));
+const PropertyDetails = React.lazy(() => import('./pages/PropertyDetails'));
+const PropertyListing = React.lazy(() => import('./pages/PropertyListing'));
+const About = React.lazy(() => import('./pages/About'));
+const Contact = React.lazy(() => import('./pages/Contact'));
 
 const App: React.FC = () => {
   return (
-    <ErrorBoundary>
-      <Routes>
-        <Route element={<DefaultLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/imoveis" element={<Properties />} />
-          <Route path="/imoveis/:id" element={<PropertyDetails />} />
-          <Route path="/sobre" element={<About />} />
-          <Route path="/contato" element={<Contact />} />
-        </Route>
-      </Routes>
-    </ErrorBoundary>
+    <ThemeProvider theme={theme}>
+      <ErrorBoundary>
+        <DefaultLayout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/imoveis" element={<Properties />} />
+            <Route path="/imoveis/:id" element={<PropertyDetails />} />
+            <Route path="/anunciar" element={<PropertyListing />} />
+            <Route path="/sobre" element={<About />} />
+            <Route path="/contato" element={<Contact />} />
+          </Routes>
+        </DefaultLayout>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 };
 

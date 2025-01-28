@@ -1,43 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { propertyService, Property } from '@/services/propertyService';
-import Typography from '@/components/ui/Typography';
-import Button from '@/components/ui/Button';
-import Card from '@/components/ui/Card';
-import Input from '@/components/ui/Input';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { propertyService } from '@/services/propertyService';
+import { Property } from 'types/Property';
+import { FilterState } from "types/FilterState";
+import { PropertyFilters } from "types/PropertyFilters";
+import PropertyCard from '@/components/PropertyCard';
+import FilterPopup from '@/components/FilterPopup';
 import Container from '@/components/ui/Container';
-import Loading from '@/components/Loading';
-import { FaSearch, FaBed, FaBath, FaRuler, FaFilter } from 'react-icons/fa';
-import { PropertiesGrid, FiltersContainer } from './styles';
-
-interface Filters {
-  minPrice: string;
-  maxPrice: string;
-  bedrooms: string;
-  type: string;
-}
+import Typography from '@/components/ui/Typography';
+import { IoFilter } from 'react-icons/io5';
+import {
+  PropertiesGrid,
+  SearchContainer,
+  SearchInput,
+  FilterButton,
+  NoResults,
+  PageContainer
+} from './styles';
 
 const Properties: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<Filters>({
-    minPrice: '',
-    maxPrice: '',
-    bedrooms: '',
-    type: ''
-  });
-  
-  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState<PropertyFilters>({});
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  useEffect(() => {
-    loadProperties();
-  }, []);
-
-  const loadProperties = async () => {
+  const loadProperties = async (searchParams?: PropertyFilters, query?: string) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const data = await propertyService.getAll();
-      setProperties(data);
+      const results = await propertyService.searchProperties(query || '', searchParams);
+      setProperties(results);
     } catch (error) {
       console.error('Erro ao carregar imóveis:', error);
     } finally {
@@ -45,117 +39,96 @@ const Properties: React.FC = () => {
     }
   };
 
-  const handlePropertyClick = (id: number) => {
-    navigate(`/imoveis/${id}`);
+  useEffect(() => {
+    const state = location.state as { 
+      searchQuery?: string; 
+      filters?: PropertyFilters;
+    };
+
+    if (state?.searchQuery || state?.filters) {
+      setSearchQuery(state.searchQuery || '');
+      setFilters(state.filters || {});
+      if (state.searchQuery) {
+        propertyService.searchProperties(state.searchQuery, state.filters);
+      } else {
+        loadProperties(state.filters);
+      }
+    } else {
+      loadProperties({});
+    }
+  }, [location.state]);
+
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault();
+    loadProperties(filters, searchQuery);
+  };
+
+  const handleFilterApply = (newFilters: FilterState) => {
+    const filtrosPropriedade: PropertyFilters = {
+      type: newFilters.type || undefined,
+      priceMin: newFilters.priceMin ? Number(newFilters.priceMin) : undefined,
+      priceMax: newFilters.priceMax ? Number(newFilters.priceMax) : undefined,
+      rooms: newFilters.rooms ? Number(newFilters.rooms) : undefined
+    };
+    setFilters(filtrosPropriedade);
+    setIsFilterOpen(false);
+    loadProperties(filtrosPropriedade, searchQuery);
   };
 
   return (
-    <>
-      <Typography variant="h1" align="center" color="primary">
-        Nossos Imóveis
-      </Typography>
-      
-      <Typography 
-        variant="subtitle" 
-        align="center" 
-        color="secondary"
-        style={{ marginTop: '1rem', marginBottom: '2rem' }}
-      >
-        Encontre o imóvel perfeito para você
-      </Typography>
+    <PageContainer>
+      <Container>
+        <Typography variant="h1" align="center" marginBottom="xl">
+          Todos os Imóveis
+        </Typography>
 
-      <FiltersContainer>
-        <Input
-          placeholder="Buscar por localização..."
-          icon={<FaSearch />}
-          fullWidth
-        />
-        <Input
-          placeholder="Preço mínimo"
-          type="number"
-          value={filters.minPrice}
-          onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-        />
-        <Input
-          placeholder="Preço máximo"
-          type="number"
-          value={filters.maxPrice}
-          onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-        />
-        <Input
-          placeholder="Quartos"
-          type="number"
-          value={filters.bedrooms}
-          onChange={(e) => setFilters({ ...filters, bedrooms: e.target.value })}
-        />
-        <Button variant="outline" icon={<FaFilter />}>
-          Mais Filtros
-        </Button>
-      </FiltersContainer>
+        <SearchContainer onSubmit={handleSearch}>
+          <SearchInput
+            type="text"
+            placeholder="Buscar imóveis..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <FilterButton type="button" onClick={() => setIsFilterOpen(true)}>
+            <IoFilter size={24} />
+            Filtros
+          </FilterButton>
+        </SearchContainer>
 
-      {loading ? (
-        <Loading />
-      ) : (
-        <PropertiesGrid>
-          {properties.map((property) => (
-            <Card 
-              key={property.id}
-              hoverable
-              clickable
-              onClick={() => handlePropertyClick(property.id)}
-            >
-              <img 
-                src={property.imageUrl || '/images/property-placeholder.jpg'} 
-                alt={property.title}
-                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-              />
-              <Card.Content>
-                <Typography variant="h4" color="primary">
-                  {property.title}
-                </Typography>
-                
-                <Typography variant="body2" color="secondary" style={{ marginTop: '0.5rem' }}>
-                  {property.location}
-                </Typography>
+        {loading ? (
+          <Typography variant="body1" align="center">
+            Carregando imóveis...
+          </Typography>
+        ) : properties.length > 0 ? (
+          <PropertiesGrid>
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </PropertiesGrid>
+        ) : (
+          <NoResults>
+            <Typography variant="h3" align="center">
+              Nenhum imóvel encontrado
+            </Typography>
+            <Typography variant="body1" align="center">
+              Tente ajustar seus filtros de busca
+            </Typography>
+          </NoResults>
+        )}
 
-                <div style={{ display: 'flex', gap: '1rem', margin: '1rem 0' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FaBed />
-                    <Typography variant="body2">
-                      {property.bedrooms} quartos
-                    </Typography>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FaBath />
-                    <Typography variant="body2">
-                      {property.bathrooms} banheiros
-                    </Typography>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FaRuler />
-                    <Typography variant="body2">
-                      {property.area}m²
-                    </Typography>
-                  </div>
-                </div>
-
-                <Typography 
-                  variant="h4" 
-                  color="accent" 
-                  weight="bold"
-                  style={{ marginTop: '1rem' }}
-                >
-                  {new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                  }).format(property.price)}
-                </Typography>
-              </Card.Content>
-            </Card>
-          ))}
-        </PropertiesGrid>
-      )}
-    </>
+        <FilterPopup
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          onApply={handleFilterApply}
+          initialFilters={{
+            type: filters.type || '',
+            rooms: (filters.rooms || 0),
+            priceMin: filters.priceMin?.toString() || '',
+            priceMax: filters.priceMax?.toString() || ''
+          }}
+        />
+      </Container>
+    </PageContainer>
   );
 };
 

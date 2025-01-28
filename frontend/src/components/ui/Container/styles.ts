@@ -4,16 +4,16 @@ import { ContainerProps, ContainerSize } from './types';
 const getSizeStyles = (size: ContainerSize = 'medium') => {
   const sizes = {
     small: css`
-      max-width: 600px;
+      max-width: 100%;
     `,
     medium: css`
-      max-width: 1200px;
+      max-width: 100%;
     `,
     large: css`
-      max-width: 1400px;
+      max-width: 100%;
     `,
     full: css`
-      max-width: none;
+      max-width: 100%;
     `
   };
 
@@ -32,17 +32,17 @@ export const StyledContainer = styled.div<ContainerProps>`
       padding-bottom: ${({ theme }) => theme.spacing.xl};
     `}
     
-  ${({ horizontalPadding }) =>
-    horizontalPadding &&
-    css`
-      padding-left: ${({ theme }) => theme.spacing.xl};
-      padding-right: ${({ theme }) => theme.spacing.xl};
-      
-      @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-        padding-left: ${({ theme }) => theme.spacing.md};
-        padding-right: ${({ theme }) => theme.spacing.md};
-      }
-    `}
+    ${({ horizontalPadding }) =>
+      horizontalPadding &&
+      css`
+        padding-left: 0;
+        padding-right: 0;
+  
+        @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+          padding-left: 0;
+          padding-right: 0;
+        }
+      `}
     
   ${({ centerContent }) =>
     centerContent &&
