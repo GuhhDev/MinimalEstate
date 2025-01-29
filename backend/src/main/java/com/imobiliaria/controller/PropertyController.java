@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/imoveis")
+@RequestMapping("/properties")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class PropertyController {
 
@@ -30,8 +30,12 @@ public class PropertyController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Property>> searchProperties(@RequestParam(name = "query") String query) {
-        List<Property> properties = propertyService.searchProperties(query);
+    public ResponseEntity<List<Property>> searchProperties(
+            @RequestParam(name = "location", required = false) String location,
+            @RequestParam(name = "propertyType", required = false) String propertyType,
+            @RequestParam(name = "priceRange", required = false) Double priceRange) {
+
+        List<Property> properties = propertyService.searchProperties(location, propertyType, priceRange);
         return ResponseEntity.ok(properties);
     }
 

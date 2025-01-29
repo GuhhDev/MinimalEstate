@@ -1,4 +1,4 @@
-import { Property } from 'types/Property';
+import Property from 'types/Property';
 
 export interface PropertyCardProps {
   property: Property;

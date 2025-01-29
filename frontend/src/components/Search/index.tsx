@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Property } from 'types/Property';
+import Property from 'types/Property';
 import SearchDropdown from '@/components/SearchDropdown';
 import { SearchContainer, SearchInput, SearchButton } from './styles';
 import { IoSearch } from 'react-icons/io5';
@@ -30,7 +30,7 @@ const Search: React.FC<SearchProps> = ({ placeholder = 'Buscar imóveis...', onS
         onSearch(value);
       }
 
-      const response = await fetch(`/api/imoveis/search?q=${encodeURIComponent(value)}`);
+      const response = await fetch(`/api/properties/search?q=${encodeURIComponent(value)}`);
       if (!response.ok) {
         throw new Error('Falha ao buscar imóveis');
       }
@@ -45,7 +45,7 @@ const Search: React.FC<SearchProps> = ({ placeholder = 'Buscar imóveis...', onS
 
   const handleSelect = (property: Property) => {
     setIsDropdownVisible(false);
-    navigate(`/imoveis/${property.id}`);
+    navigate(`/properties/${property.id}`);
   };
 
   return (

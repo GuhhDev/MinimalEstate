@@ -3,8 +3,8 @@ import { Location } from "./Location";
 import { PropertyStatus } from "./PropertyStatus";
 import { PropertyType } from "./PropertyType";
 
-export interface Property {
-  id?: string;
+export default interface Property {
+  id?: number;
   title: string;
   description: string;
   type: PropertyType;
@@ -13,8 +13,8 @@ export interface Property {
   bedrooms?: number;
   bathrooms?: number;
   parkingSpaces?: number;
-  location: Location;
-  features?: Feature[];
+  location: Location; 
+  features?: Feature[]; 
   imageUrls?: string[];
   status: PropertyStatus;
   createdAt?: string;

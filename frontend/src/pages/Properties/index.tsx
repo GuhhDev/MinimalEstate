@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { propertyService } from '@/services/propertyService';
-import { Property } from 'types/Property';
 import { FilterState } from "types/FilterState";
 import { PropertyFilters } from "types/PropertyFilters";
 import PropertyCard from '@/components/PropertyCard';
@@ -17,6 +16,7 @@ import {
   NoResults,
   PageContainer
 } from './styles';
+import Property from 'types/Property';
 
 const Properties: React.FC = () => {
   const location = useLocation();
@@ -48,11 +48,7 @@ const Properties: React.FC = () => {
     if (state?.searchQuery || state?.filters) {
       setSearchQuery(state.searchQuery || '');
       setFilters(state.filters || {});
-      if (state.searchQuery) {
-        propertyService.searchProperties(state.searchQuery, state.filters);
-      } else {
-        loadProperties(state.filters);
-      }
+      loadProperties(state.filters, state.searchQuery);
     } else {
       loadProperties({});
     }
@@ -68,7 +64,7 @@ const Properties: React.FC = () => {
       type: newFilters.type || undefined,
       priceMin: newFilters.priceMin ? Number(newFilters.priceMin) : undefined,
       priceMax: newFilters.priceMax ? Number(newFilters.priceMax) : undefined,
-      rooms: newFilters.rooms ? Number(newFilters.rooms) : undefined
+      rooms: newFilters.rooms ? Number(newFilters.rooms) : undefined,
     };
     setFilters(filtrosPropriedade);
     setIsFilterOpen(false);

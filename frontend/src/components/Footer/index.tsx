@@ -66,7 +66,7 @@ const Footer: React.FC = () => {
               Links Úteis
             </Typography>
             <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <Link to="/imoveis">
+              <Link to="/properties">
                 <Typography variant="body2" color="white" style={{ opacity: 0.8 }}>
                   Buscar Imóveis
                 </Typography>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Property } from 'types/Property';
+import Property from 'types/Property';
 import { propertyService } from '@/services/propertyService';
 import HeroSlider from '@/components/HeroSlider';
 import PropertyCard from '@/components/PropertyCard';
@@ -40,11 +40,11 @@ export default function SearchProperty() {
   }, []);
 
   const handleSearch = (query: string) => {
-    navigate('/imoveis', { state: { query } });
+    navigate('/properties', { state: { query } });
   };
 
   const handleFilter = (filters: any) => {
-    navigate('/imoveis', { state: { filters } });
+    navigate('/properties', { state: { filters } });
   };
 
   if (loading) {

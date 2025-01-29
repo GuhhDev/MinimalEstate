@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Property } from 'types/Property';
 import { PropertyType } from "types/PropertyType";
 import { PropertyStatus } from "types/PropertyStatus";
 import { Container } from '@/components/Container';
@@ -15,6 +14,7 @@ import {
   ImageUpload,
   SubmitButton
 } from './styles';
+import Property from 'types/Property';
 
 interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
 
@@ -89,7 +89,7 @@ const PropertyListing: React.FC = () => {
         formData.append('images', image);
       });
 
-      const response = await fetch('http://localhost:8092/api/imoveis', {
+      const response = await fetch('http://localhost:8092/api/properties', {
         method: 'POST',
         body: formData
       });
@@ -98,7 +98,7 @@ const PropertyListing: React.FC = () => {
         throw new Error('Error creating property');
       }
 
-      navigate('/imoveis');
+      navigate('/properties');
     } catch (error) {
       console.error('Error creating property:', error);
     }

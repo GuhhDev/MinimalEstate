@@ -1,8 +1,9 @@
-import { Property } from 'types/Property';
+import Property from "types/Property";
 import { PropertyFilters } from "types/PropertyFilters";
+import { api } from "./api";
 
 class PropertyService {
-  private baseUrl = '/api/imoveis';
+  private baseUrl = '/api/properties';
 
   async getHighlightedProperties(): Promise<Property[]> {
     try {
@@ -31,11 +32,11 @@ class PropertyService {
         });
       }
 
-      const response = await fetch(`${this.baseUrl}/search?${params.toString()}`);
-      if (!response.ok) {
+      const response = await api.get(`${this.baseUrl}/search?${params.toString()}`);
+      if (!response.data) {
         throw new Error('Falha ao buscar imóveis');
       }
-      return await response.json();
+      return await response.data;
     } catch (error) {
       console.error('Erro ao buscar imóveis:', error);
       return [];

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Property } from 'types/Property';
 import { Typography } from '@/components/Typography';
 import { Container } from '@/components/Container';
 import {
@@ -9,6 +8,7 @@ import {
   Content,
   Details
 } from './styles';
+import Property from 'types/Property';
 
 const PropertyDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +19,7 @@ const PropertyDetails: React.FC = () => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await fetch(`/api/imoveis/${id}`);
+        const response = await fetch(`/api/properties/${id}`);
         if (!response.ok) {
           throw new Error('Falha ao carregar o imóvel');
         }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Property } from 'types/Property';
+import Property from 'types/Property';
 import { formatCurrency } from '@/utils/format';
 import {
   DropdownContainer,

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Property } from 'types/Property';
+import Property from 'types/Property';
 import { propertyService } from '@/services/propertyService';
 import { PropertyType } from "types/PropertyType";
 

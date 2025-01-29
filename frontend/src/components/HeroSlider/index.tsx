@@ -1,7 +1,6 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { Property } from 'types/Property';
 import { FilterState } from "types/FilterState";
 import SearchBar from '../SearchBar';
 import FilterPopup from '../FilterPopup';
@@ -16,6 +15,7 @@ import {
   SlideTitle,
   SlideDescription,
 } from './styles';
+import Property from 'types/Property';
 
 interface HeroSliderProps {
   properties: Property[];

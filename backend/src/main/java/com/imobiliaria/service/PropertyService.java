@@ -1,6 +1,7 @@
 package com.imobiliaria.service;
 
 import com.imobiliaria.dto.PropertyDTO;
+import com.imobiliaria.enums.PropertyType;
 import com.imobiliaria.model.Property;
 import com.imobiliaria.model.Location;
 import com.imobiliaria.repository.PropertyRepository;
@@ -35,15 +36,17 @@ public class PropertyService {
         return propertyRepository.findAll();
     }
 
-    public List<Property> searchProperties(String query) {
-        // Busca simples por título, descrição ou localização
-        String searchQuery = query.toLowerCase();
-        return propertyRepository.findAll().stream()
-            .filter(p -> 
-                (p.getTitle() != null && p.getTitle().toLowerCase().contains(searchQuery)) ||
-                (p.getDescription() != null && p.getDescription().toLowerCase().contains(searchQuery))
-            )
-            .collect(Collectors.toList());
+    public List<Property> searchProperties(String location, String propertyTypeStr, Double priceRange) {
+        PropertyType propertyType = null;
+        if (propertyTypeStr != null && !propertyTypeStr.isEmpty()) {
+            try {
+                propertyType = PropertyType.valueOf(propertyTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Tipo de propriedade inválido: " + propertyTypeStr);
+            }
+        }
+
+        return propertyRepository.findByLocationAndTypeAndPriceRange(location, propertyType, priceRange);
     }
 
     @Transactional

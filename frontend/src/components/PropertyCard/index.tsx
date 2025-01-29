@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Property } from 'types/Property';
+import Property from 'types/Property';
 import { FaBed } from 'react-icons/fa';
 import {
   CardContainer,
@@ -25,7 +25,7 @@ const formatCurrency = (value: number) => {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   return (
-    <CardContainer as={Link} to={`/imoveis/${property.id}`}>
+    <CardContainer as={Link} to={`/properties/${property.id}`}>
       <ImageContainer>
         <Image
           src={property.imageUrls?.[0] || '/images/property-placeholder.jpg'}
