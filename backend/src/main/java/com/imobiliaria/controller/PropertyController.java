@@ -17,11 +17,14 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class PropertyController {
 
-    @Autowired
-    private PropertyService propertyService;
+    private final PropertyService propertyService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
+
+    public PropertyController(PropertyService propertyService, ObjectMapper objectMapper) {
+        this.propertyService = propertyService;
+        this.objectMapper = objectMapper;
+    }
 
     @GetMapping("/featured")
     public ResponseEntity<List<Property>> getFeaturedProperties() {
@@ -32,7 +35,7 @@ public class PropertyController {
     @GetMapping("/search")
     public ResponseEntity<List<Property>> searchProperties(
             @RequestParam(name = "location", required = false) String location,
-            @RequestParam(name = "propertyType", required = false) String propertyType,
+            @RequestParam(name = "type", required = false) String propertyType,
             @RequestParam(name = "priceRange", required = false) Double priceRange) {
 
         List<Property> properties = propertyService.searchProperties(location, propertyType, priceRange);

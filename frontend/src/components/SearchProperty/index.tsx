@@ -23,7 +23,7 @@ export default function SearchProperty() {
 
         const [featured, recent] = await Promise.all([
           propertyService.getHighlightedProperties(),
-          propertyService.getAll({ limit: 6 })
+          propertyService.getAll()
         ]);
 
         setFeaturedProperties(featured);

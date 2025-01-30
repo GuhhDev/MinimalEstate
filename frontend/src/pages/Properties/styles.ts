@@ -1,83 +1,121 @@
 import styled from 'styled-components';
 
+export const PropertiesGrid = styled.div`
+  margin-right: 15%;
+  margin-left: 15%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0;
+`;
+
+export const FiltersContainer = styled.div`
+  top: 76px;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+  padding: ${({ theme }) => theme.spacing.md} 0;
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+`;
+
+export const PropertyRow = styled.div`
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    
+    img {
+      width: 100%;
+      height: 200px;
+    }
+  }
+`;
+
+export const PropertyDetails = styled.div`
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+export const Price = styled.div`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+`;
+
+export const Address = styled.div`
+  color: ${({ theme }) => theme.colors.text};
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+`;
+
+export const Features = styled.div`
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  
+  div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: ${({ theme }) => theme.colors.textLight};
+  }
+`;
+
+export const Description = styled.p`
+  color: ${({ theme }) => theme.colors.text};
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
 export const PageContainer = styled.div`
   padding: ${({ theme }) => theme.spacing.xxl} 0;
   background-color: ${({ theme }) => theme.colors.background};
+  min-height: 100vh;
 `;
 
-export const PropertiesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  padding: 2rem 0;
-`;
-
-export const SearchContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin: 2rem 0;
+export const PropertyImage = styled.img`
+  
   width: 100%;
-`;
+  height: 200px;
+  object-fit: cover;
+  display: block;
 
-export const SearchInput = styled.input`
-  flex: 1;
-  height: 48px;
-  padding: 0 1rem;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: 8px;
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.backgroundLight};
-    cursor: not-allowed;
+  @media (max-width: 768px) {
+    height: 250px;
+    width: 100%;
   }
 `;
 
-export const FilterButton = styled.button`
+export const PropertyContent = styled.div`
+  padding: 1.5rem;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 48px;
-  padding: 0 1.5rem;
-  background-color: ${({ theme }) => theme.colors.primary};
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primaryDark};
-  }
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.backgroundLight};
-    cursor: not-allowed;
-  }
-
-  svg {
-    font-size: 1.2rem;
-  }
+  flex-direction: column;
+  gap: 1rem;
 `;
 
-export const NoResults = styled.div`
-  text-align: center;
-  padding: 4rem 0;
-
-  h2 {
-    font-size: 1.5rem;
-    color: ${({ theme }) => theme.colors.text};
-    margin-bottom: 1rem;
-  }
-
-  p {
-    color: ${({ theme }) => theme.colors.textLight};
-  }
+export const PropertyHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 `;

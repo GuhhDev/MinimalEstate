@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { FilterState } from "types/FilterState";
@@ -27,10 +27,9 @@ interface HeroSliderProps {
 const HeroSlider: React.FC<HeroSliderProps> = ({ 
   properties,
   onSearch,
-  onFilter,
-  loading
 }) => {
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
+  const [filters, setFilters] = useState({});
 
   return (
     <HeroWrapper>
@@ -69,24 +68,12 @@ const HeroSlider: React.FC<HeroSliderProps> = ({
       </HeroContainer>
 
       <SearchContainer>
+      <FilterPopup onApply={(newFilters) => setFilters(newFilters)}/>
         <SearchBar 
           onSearch={onSearch} 
           onFilterClick={() => setIsFilterOpen(true)} 
         />
-        <FilterPopup
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          onApply={(filters) => {
-            onFilter(filters);
-            setIsFilterOpen(false);
-          }}
-          initialFilters={{
-            type: '',
-            rooms: 0,
-            priceMin: '',
-            priceMax: ''
-          }}
-        />
+        
       </SearchContainer>
     </HeroWrapper>
   );

@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { propertyService } from '@/services/propertyService';
-import { FilterState } from "types/FilterState";
 import { PropertyFilters } from "types/PropertyFilters";
-import PropertyCard from '@/components/PropertyCard';
 import FilterPopup from '@/components/FilterPopup';
 import Container from '@/components/ui/Container';
 import Typography from '@/components/ui/Typography';
-import { IoFilter } from 'react-icons/io5';
-import {
-  PropertiesGrid,
-  SearchContainer,
-  SearchInput,
-  FilterButton,
-  NoResults,
-  PageContainer
-} from './styles';
+import { Address, Description, Features, FiltersContainer, PageContainer, Price, PropertiesGrid, PropertyDetails, PropertyImage, PropertyRow } from './styles';
 import Property from 'types/Property';
+import { FilterState } from 'types/FilterState';
+import { Button } from '@mui/material';
+import { NoResults } from 'components/SearchDropdown/styles';
 
 const Properties: React.FC = () => {
   const location = useLocation();
@@ -25,7 +18,6 @@ const Properties: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<PropertyFilters>({});
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const loadProperties = async (searchParams?: PropertyFilters, query?: string) => {
     setLoading(true);
@@ -40,35 +32,26 @@ const Properties: React.FC = () => {
   };
 
   useEffect(() => {
-    const state = location.state as { 
-      searchQuery?: string; 
+    const state = location.state as {
+      searchQuery?: string;
       filters?: PropertyFilters;
     };
 
-    if (state?.searchQuery || state?.filters) {
-      setSearchQuery(state.searchQuery || '');
-      setFilters(state.filters || {});
-      loadProperties(state.filters, state.searchQuery);
-    } else {
-      loadProperties({});
-    }
+    loadProperties(state?.filters || {}, state?.searchQuery || '');
+    setSearchQuery(state?.searchQuery || '');
+    setFilters(state?.filters || {});
   }, [location.state]);
 
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    loadProperties(filters, searchQuery);
-  };
-
   const handleFilterApply = (newFilters: FilterState) => {
-    const filtrosPropriedade: PropertyFilters = {
+    const apiFilters: PropertyFilters = {
       type: newFilters.type || undefined,
+      rooms: newFilters.rooms || undefined,
       priceMin: newFilters.priceMin ? Number(newFilters.priceMin) : undefined,
       priceMax: newFilters.priceMax ? Number(newFilters.priceMax) : undefined,
-      rooms: newFilters.rooms ? Number(newFilters.rooms) : undefined,
     };
-    setFilters(filtrosPropriedade);
-    setIsFilterOpen(false);
-    loadProperties(filtrosPropriedade, searchQuery);
+  
+    setFilters(apiFilters);
+    loadProperties(apiFilters, searchQuery);
   };
 
   return (
@@ -78,18 +61,12 @@ const Properties: React.FC = () => {
           Todos os Imóveis
         </Typography>
 
-        <SearchContainer onSubmit={handleSearch}>
-          <SearchInput
-            type="text"
-            placeholder="Buscar imóveis..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+        <FiltersContainer>
+          <FilterPopup 
+            onApply={handleFilterApply}
+            initialFilters={filters}
           />
-          <FilterButton type="button" onClick={() => setIsFilterOpen(true)}>
-            <IoFilter size={24} />
-            Filtros
-          </FilterButton>
-        </SearchContainer>
+        </FiltersContainer>
 
         {loading ? (
           <Typography variant="body1" align="center">
@@ -98,7 +75,36 @@ const Properties: React.FC = () => {
         ) : properties.length > 0 ? (
           <PropertiesGrid>
             {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyRow key={property.id}>
+                <PropertyImage 
+                  src={`casa1.jpg`} 
+                  alt={`Imagem do imóvel ${property.title}`} 
+                />
+                <PropertyDetails>
+                  <div>
+                    <Price>R$ {property.price.toLocaleString('pt-BR')}</Price>
+                    <Address>{property.location.address}</Address>
+                    <Features>
+                      <div>
+                        <i className="fas fa-bed"></i>
+                        {property.bedrooms} Quartos
+                      </div>
+                      <div>
+                        <i className="fas fa-bath"></i>
+                        {property.bathrooms} Banheiros
+                      </div>
+                      <div>
+                        <i className="fas fa-car"></i>
+                        {property.bathrooms} Vagas
+                      </div>
+                    </Features>
+                    <Description>{property.description}</Description>
+                  </div>
+                  <Button>
+                    Ver Detalhes
+                  </Button>
+                </PropertyDetails>
+              </PropertyRow>
             ))}
           </PropertiesGrid>
         ) : (
@@ -106,23 +112,8 @@ const Properties: React.FC = () => {
             <Typography variant="h3" align="center">
               Nenhum imóvel encontrado
             </Typography>
-            <Typography variant="body1" align="center">
-              Tente ajustar seus filtros de busca
-            </Typography>
           </NoResults>
         )}
-
-        <FilterPopup
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          onApply={handleFilterApply}
-          initialFilters={{
-            type: filters.type || '',
-            rooms: (filters.rooms || 0),
-            priceMin: filters.priceMin?.toString() || '',
-            priceMax: filters.priceMax?.toString() || ''
-          }}
-        />
       </Container>
     </PageContainer>
   );
