@@ -31,8 +31,6 @@ public class PropertyService {
     }
 
     public List<Property> getFeaturedProperties() {
-        // Por enquanto retorna todas as propriedades
-        // TODO: Implementar lógica para destacar propriedades
         return propertyRepository.findAll();
     }
 

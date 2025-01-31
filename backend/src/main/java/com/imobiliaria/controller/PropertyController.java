@@ -42,7 +42,7 @@ public class PropertyController {
         return ResponseEntity.ok(properties);
     }
 
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE })
+    @PostMapping(name="/anunciar", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE })
     public ResponseEntity<Property> createProperty(
             @RequestPart(name = "property") String propertyJson,
             @RequestPart(name = "images", required = false) List<MultipartFile> images) {
