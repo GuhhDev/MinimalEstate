@@ -19,7 +19,7 @@ import Property from 'types/Property';
 
 interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
 
-  const PropertyListing: React.FC = () => {
+  export default function PropertyListing() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -83,10 +83,8 @@ interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
-    // Evita múltiplos envios simultâneos
     if (isSubmitting) return;
   
-    // Validações dos campos
     const newErrors: Record<string, string> = {};
   
     if (!property.title.trim()) {
@@ -113,17 +111,14 @@ interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
       newErrors['location.state'] = 'Estado é obrigatório';
     }
   
-    // Se houver erros, interrompe o envio
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
   
     try {
-      // Inicia o estado de carregamento
       setIsSubmitting(true);
   
-      // Prepara os dados para envio
       const propertyDTO = {
         ...property,
         price: property.price,
@@ -135,25 +130,21 @@ interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
         }
       };
   
-      // Cria o FormData para enviar imagens
       const formData = new FormData();
       formData.append('property', JSON.stringify(propertyDTO));
       images.forEach(image => {
         formData.append('images', image);
       });
   
-      // Envia os dados para o backend
       const response = await fetch('http://localhost:8092/api/properties', {
         method: 'POST',
         body: formData
       });
   
-      // Verifica se a resposta foi bem-sucedida
       if (!response.ok) {
         throw new Error('Erro ao cadastrar imóvel');
       }
   
-      // Navegação suave com timeout mínimo
       setTimeout(() => {
         navigate('/properties');
       }, 100);
@@ -161,13 +152,11 @@ interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
     } catch (error) {
       console.error('Erro ao cadastrar imóvel:', error);
       
-      // Exibe mensagem de erro geral
       setErrors({
         general: 'Erro ao cadastrar imóvel. Verifique os dados e tente novamente.'
       });
   
     } finally {
-      // Finaliza o estado de carregamento
       setIsSubmitting(false);
     }
   };
@@ -356,5 +345,3 @@ interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
     </Container>
   );
 };
-
-export default PropertyListing;

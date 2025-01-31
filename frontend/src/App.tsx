@@ -1,23 +1,26 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import Loading from '@/components/Loading';
+import Container from '@/components/ui/Container';
+import About from 'pages/About';
+import Contact from 'pages/Contact';
+import Home from 'pages/Home';
+import Properties from 'pages/Properties';
+import PropertyDetails from 'pages/PropertyDetails';
+import PropertyListing from 'pages/PropertyListing';
+import { Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import { theme } from './styles/theme';
 import ErrorBoundary from './components/ErrorBoundary';
-import DefaultLayout from './layouts/DefaultLayout';
+import { theme } from './styles/theme';
 
-// Lazy loading das páginas
-const Home = React.lazy(() => import('./pages/Home'));
-const Properties = React.lazy(() => import('./pages/Properties'));
-const PropertyDetails = React.lazy(() => import('./pages/PropertyDetails'));
-const PropertyListing = React.lazy(() => import('./pages/PropertyListing'));
-const About = React.lazy(() => import('./pages/About'));
-const Contact = React.lazy(() => import('./pages/Contact'));
-
-const App: React.FC = () => {
+export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <ErrorBoundary>
-        <DefaultLayout>
+      <Header />
+        <Container>
+          <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/properties" element={<Properties />} />
@@ -26,10 +29,10 @@ const App: React.FC = () => {
             <Route path="/sobre" element={<About />} />
             <Route path="/contato" element={<Contact />} />
           </Routes>
-        </DefaultLayout>
+        </Suspense>
+        </Container>
+      <Footer />
       </ErrorBoundary>
     </ThemeProvider>
   );
 };
-
-export default App;

@@ -1,7 +1,6 @@
-import type React from "react"
 import * as S from "./styles"
 
-const SectionHome: React.FC = () => {
+export default function SectionHome() {
 
   return (
     <S.HomeSection>
@@ -16,6 +15,3 @@ const SectionHome: React.FC = () => {
     </S.HomeSection>
   )
 }
-
-export default SectionHome
-

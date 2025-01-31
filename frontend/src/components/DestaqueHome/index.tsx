@@ -4,11 +4,11 @@ import Property from 'types/Property';
 import { useNavigate } from 'react-router-dom';
 import { PropertyType } from 'types/PropertyType';
 
-const Hero: React.FC = () => {
+export default function Hero() {
   const [location, setLocation] = useState('');
   const [propertyType, setPropertyType] = useState<PropertyType | ''>('');
   const [price, setPrice] = useState('');
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [properties] = useState<Property[]>([]);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +44,6 @@ const Hero: React.FC = () => {
                 onChange={(e) => setLocation(e.target.value)}
               />
 
-              {/* Select para Tipo de Imóvel */}
               <S.Select 
                 value={propertyType}
                 onChange={(e) => setPropertyType(e.target.value as PropertyType)}
@@ -56,7 +55,6 @@ const Hero: React.FC = () => {
                 <option value={PropertyType.COMMERCIAL}>Comercial</option>
               </S.Select>
 
-              {/* Campo de Preço com validação numérica */}
               <S.SearchInput 
                 type="number"
                 placeholder="Preço máximo (Ex: 500000)"
@@ -73,7 +71,6 @@ const Hero: React.FC = () => {
           </S.SearchContainer>
         </S.SearchForm>
 
-        {/* Seção de resultados */}
         <S.ResultsContainer>
           {properties.map(property => (
             <S.PropertyCard key={property.id}>
@@ -87,5 +84,3 @@ const Hero: React.FC = () => {
     </S.HeroSection>
   );
 };
-
-export default Hero;
