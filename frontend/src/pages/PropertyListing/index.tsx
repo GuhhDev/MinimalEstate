@@ -16,6 +16,8 @@ import {
   ErrorMessage
 } from './styles';
 import Property from 'types/Property';
+import { propertyService } from 'services/propertyService';
+import { validatePropertyForm } from 'utils/validations/validatePropertyForm';
 
 interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
 
@@ -82,80 +84,26 @@ interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     if (isSubmitting) return;
-  
-    const newErrors: Record<string, string> = {};
-  
-    if (!property.title.trim()) {
-      newErrors.title = 'Título é obrigatório';
-    }
-  
-    if (property.price <= 0) {
-      newErrors.price = 'Preço deve ser positivo';
-    }
-  
-    if (property.area <= 0) {
-      newErrors.area = 'Área deve ser positiva';
-    }
-  
-    if (!property.location.address.trim()) {
-      newErrors['location.address'] = 'Endereço é obrigatório';
-    }
-  
-    if (!property.location.city.trim()) {
-      newErrors['location.city'] = 'Cidade é obrigatória';
-    }
-  
-    if (!property.location.state.trim()) {
-      newErrors['location.state'] = 'Estado é obrigatório';
-    }
-  
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+
+    const validationErrors = validatePropertyForm(property);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
-  
+
     try {
       setIsSubmitting(true);
-  
-      const propertyDTO = {
-        ...property,
-        price: property.price,
-        area: property.area,
-        location: {
-          address: property.location.address,
-          city: property.location.city,
-          state: property.location.state
-        }
-      };
-  
-      const formData = new FormData();
-      formData.append('property', JSON.stringify(propertyDTO));
-      images.forEach(image => {
-        formData.append('images', image);
-      });
-  
-      const response = await fetch('http://localhost:8092/api/properties', {
-        method: 'POST',
-        body: formData
-      });
-  
-      if (!response.ok) {
-        throw new Error('Erro ao cadastrar imóvel');
-      }
-  
+      await propertyService.create(property, images);
+      
       setTimeout(() => {
         navigate('/properties');
       }, 100);
-  
     } catch (error) {
       console.error('Erro ao cadastrar imóvel:', error);
-      
       setErrors({
         general: 'Erro ao cadastrar imóvel. Verifique os dados e tente novamente.'
       });
-  
     } finally {
       setIsSubmitting(false);
     }
