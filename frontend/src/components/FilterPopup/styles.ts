@@ -6,7 +6,7 @@ export const FilterContainer = styled.div`
   padding: 1.5rem;
   margin-top: 1rem;
   width: 100%;
-  max-width: 1200px;
+  max-width: 60%;
   margin: 1rem auto 0;
   border: none;
   box-shadow: none;

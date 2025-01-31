@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 export const PropertiesGrid = styled.div`
-  margin-right: 15%;
-  margin-left: 15%;
+  margin-right: 20%;
+  margin-left: 20%;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
