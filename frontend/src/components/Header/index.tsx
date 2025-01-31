@@ -34,7 +34,7 @@ const Header: React.FC = () => {
     { path: '/properties', label: 'Imóveis' },
     { path: '/sobre', label: 'Sobre' },
     { path: '/contato', label: 'Contato' },
-    { path: '/anunciar', label: 'Anunciar' }
+    { path: '/properties/anunciar', label: 'Anunciar' }
   ];
 
   return (

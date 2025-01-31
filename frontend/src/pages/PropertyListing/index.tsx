@@ -12,13 +12,16 @@ import {
   Input,
   Select,
   ImageUpload,
-  SubmitButton
+  SubmitButton,
+  ErrorMessage
 } from './styles';
 import Property from 'types/Property';
 
 interface PropertyForm extends Omit<Property, 'id' | 'images'> {}
 
-const PropertyListing: React.FC = () => {
+  const PropertyListing: React.FC = () => {
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const [property, setProperty] = useState<PropertyForm>({
     title: '',
@@ -41,66 +44,131 @@ const PropertyListing: React.FC = () => {
     updatedAt: new Date().toISOString()
   });
   const [images, setImages] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
-    if (name === 'location') {
+    if (name.startsWith('location.')) {
+      const locationField = name.split('.')[1];
       setProperty(prev => ({
         ...prev,
         location: {
           ...prev.location,
-          address: value,
+          [locationField]: value
         }
       }));
     } else {
       setProperty(prev => ({
         ...prev,
-        [name]: name === 'price' || name === 'area' || name === 'bedrooms' || name === 'bathrooms' || name === 'parkingSpaces'
-          ? Number(value)
+        [name]: ['price', 'area', 'bedrooms', 'bathrooms', 'parkingSpaces'].includes(name)
+          ? Math.max(0, Number(value))
           : value
       }));
     }
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setImages(Array.from(e.target.files));
+      const files = Array.from(e.target.files);
+      setImages(files);
+      
+      const urls = files.map(file => URL.createObjectURL(file));
+      setPreviews(urls);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    // Evita múltiplos envios simultâneos
+    if (isSubmitting) return;
+  
+    // Validações dos campos
+    const newErrors: Record<string, string> = {};
+  
+    if (!property.title.trim()) {
+      newErrors.title = 'Título é obrigatório';
+    }
+  
+    if (property.price <= 0) {
+      newErrors.price = 'Preço deve ser positivo';
+    }
+  
+    if (property.area <= 0) {
+      newErrors.area = 'Área deve ser positiva';
+    }
+  
+    if (!property.location.address.trim()) {
+      newErrors['location.address'] = 'Endereço é obrigatório';
+    }
+  
+    if (!property.location.city.trim()) {
+      newErrors['location.city'] = 'Cidade é obrigatória';
+    }
+  
+    if (!property.location.state.trim()) {
+      newErrors['location.state'] = 'Estado é obrigatório';
+    }
+  
+    // Se houver erros, interrompe o envio
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+  
     try {
+      // Inicia o estado de carregamento
+      setIsSubmitting(true);
+  
+      // Prepara os dados para envio
       const propertyDTO = {
         ...property,
-        price: property.price.toString(),
-        area: property.area.toString(),
+        price: property.price,
+        area: property.area,
         location: {
           address: property.location.address,
           city: property.location.city,
           state: property.location.state
         }
       };
-
+  
+      // Cria o FormData para enviar imagens
       const formData = new FormData();
       formData.append('property', JSON.stringify(propertyDTO));
       images.forEach(image => {
         formData.append('images', image);
       });
-
+  
+      // Envia os dados para o backend
       const response = await fetch('http://localhost:8092/api/properties', {
         method: 'POST',
         body: formData
       });
-
+  
+      // Verifica se a resposta foi bem-sucedida
       if (!response.ok) {
-        throw new Error('Error creating property');
+        throw new Error('Erro ao cadastrar imóvel');
       }
-
-      navigate('/properties');
+  
+      // Navegação suave com timeout mínimo
+      setTimeout(() => {
+        navigate('/properties');
+      }, 100);
+  
     } catch (error) {
-      console.error('Error creating property:', error);
+      console.error('Erro ao cadastrar imóvel:', error);
+      
+      // Exibe mensagem de erro geral
+      setErrors({
+        general: 'Erro ao cadastrar imóvel. Verifique os dados e tente novamente.'
+      });
+  
+    } finally {
+      // Finaliza o estado de carregamento
+      setIsSubmitting(false);
     }
   };
 
@@ -109,20 +177,25 @@ const PropertyListing: React.FC = () => {
       <ListingContainer>
         <Typography variant="h1">Cadastrar Imóvel</Typography>
         <Form onSubmit={handleSubmit}>
+          {errors.general && <ErrorMessage>{errors.general}</ErrorMessage>}
+
           <FormGroup>
-            <Label>Título</Label>
+            <Label htmlFor="title">Título</Label>
             <Input
+              id="title"
               type="text"
               name="title"
               value={property.title}
               onChange={handleChange}
               required
             />
+            {errors.title && <ErrorMessage>{errors.title}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
-            <Label>Description</Label>
+            <Label htmlFor="description">Descrição</Label>
             <Input
+              id="description"
               as="textarea"
               name="description"
               value={property.description}
@@ -132,8 +205,14 @@ const PropertyListing: React.FC = () => {
           </FormGroup>
 
           <FormGroup>
-            <Label>Type</Label>
-            <Select name="type" value={property.type} onChange={handleChange} required>
+            <Label htmlFor="type">Tipo</Label>
+            <Select 
+              id="type" 
+              name="type" 
+              value={property.type} 
+              onChange={handleChange} 
+              required
+            >
               {Object.values(PropertyType).map(type => (
                 <option key={type} value={type}>
                   {type}
@@ -143,113 +222,132 @@ const PropertyListing: React.FC = () => {
           </FormGroup>
 
           <FormGroup>
-            <Label>Price</Label>
+            <Label htmlFor="price">Preço</Label>
             <Input
+              id="price"
               type="number"
               name="price"
               value={property.price}
               onChange={handleChange}
+              min="0"
               required
             />
+            {errors.price && <ErrorMessage>{errors.price}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
-            <Label>Area</Label>
+            <Label htmlFor="area">Área (m²)</Label>
             <Input
+              id="area"
               type="number"
               name="area"
               value={property.area}
               onChange={handleChange}
+              min="0"
               required
             />
+            {errors.area && <ErrorMessage>{errors.area}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
-            <Label>Bedrooms</Label>
+            <Label htmlFor="bedrooms">Quartos</Label>
             <Input
+              id="bedrooms"
               type="number"
               name="bedrooms"
               value={property.bedrooms}
               onChange={handleChange}
+              min="0"
               required
             />
           </FormGroup>
 
           <FormGroup>
-            <Label>Bathrooms</Label>
+            <Label htmlFor="bathrooms">Banheiros</Label>
             <Input
+              id="bathrooms"
               type="number"
               name="bathrooms"
               value={property.bathrooms}
               onChange={handleChange}
+              min="0"
               required
             />
           </FormGroup>
 
           <FormGroup>
-            <Label>Parking Spaces</Label>
+            <Label htmlFor="parkingSpaces">Vagas Garagem</Label>
             <Input
+              id="parkingSpaces"
               type="number"
               name="parkingSpaces"
               value={property.parkingSpaces}
               onChange={handleChange}
+              min="0"
               required
             />
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="location">Address</Label>
+            <Label htmlFor="address">Endereço</Label>
             <Input
+              id="address"
               type="text"
-              name="location"
+              name="location.address"
               value={property.location.address}
               onChange={handleChange}
               required
             />
+            {errors['location.address'] && <ErrorMessage>{errors['location.address']}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="city">City</Label>
+            <Label htmlFor="city">Cidade</Label>
             <Input
+              id="city"
               type="text"
-              name="city"
+              name="location.city"
               value={property.location.city}
-              onChange={(e) => setProperty(prev => ({
-                ...prev,
-                location: {
-                  ...prev.location,
-                  city: e.target.value
-                }
-              }))}
+              onChange={handleChange}
               required
             />
+            {errors['location.city'] && <ErrorMessage>{errors['location.city']}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="state">State</Label>
+            <Label htmlFor="state">Estado</Label>
             <Input
+              id="state"
               type="text"
-              name="state"
+              name="location.state"
               value={property.location.state}
-              onChange={(e) => setProperty(prev => ({
-                ...prev,
-                location: {
-                  ...prev.location,
-                  state: e.target.value
-                }
-              }))}
+              onChange={handleChange}
               required
             />
+            {errors['location.state'] && <ErrorMessage>{errors['location.state']}</ErrorMessage>}
           </FormGroup>
 
           <FormGroup>
-            <Label>Images</Label>
+            <Label htmlFor="images">Imagens</Label>
             <ImageUpload
+              id="images"
               type="file"
               accept="image/*"
               multiple
               onChange={handleImageChange}
             />
+            {previews.length > 0 && (
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                {previews.map((src, index) => (
+                  <img 
+                    key={index} 
+                    src={src} 
+                    alt={`Preview ${index}`} 
+                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                  />
+                ))}
+              </div>
+            )}
           </FormGroup>
 
           <SubmitButton type="submit">Cadastrar Imóvel</SubmitButton>

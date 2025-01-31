@@ -1,100 +1,104 @@
 import styled from 'styled-components';
 
 export const ListingContainer = styled.div`
-  padding: 40px 0;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+
+  &.submitting {
+    opacity: 0.7;
+    pointer-events: none;
+  }
 `;
 
 export const Form = styled.form`
-  max-width: 800px;
-  margin: 0 auto;
-  background: white;
-  padding: 30px;
+  background: #fff;
+  padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
 export const FormGroup = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 `;
 
 export const Label = styled.label`
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 0.5rem;
   font-weight: 500;
   color: #333;
 `;
 
 export const Input = styled.input`
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e1e1e1;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
-  background: white;
+  font-size: 1rem;
 
   &:focus {
     outline: none;
-    border-color: #0066cc;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+  }
+
+  &[type="number"] {
+    -moz-appearance: textfield;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 `;
 
 export const Select = styled.select`
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e1e1e1;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 1rem;
   background: white;
-
-  &:focus {
-    outline: none;
-    border-color: #0066cc;
-  }
 `;
 
-export const ImageUpload = styled.input`
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #e1e1e1;
-  border-radius: 4px;
-  font-size: 14px;
-  background: white;
+export const ImageUpload = styled(Input)`
+  padding: 0.5rem;
+  border: 2px dashed #ddd;
+  background: #f8f9fa;
 
-  &::file-selector-button {
-    padding: 8px 16px;
-    margin-right: 16px;
-    background: #f5f5f5;
-    border: none;
-    border-radius: 4px;
-    color: #333;
-    cursor: pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background: #e1e1e1;
-    }
+  &:hover {
+    border-color: #007bff;
   }
 `;
 
 export const SubmitButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  background: #0066cc;
+  background: #007bff;
   color: white;
+  padding: 1rem 2rem;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background 0.3s ease;
 
   &:hover {
-    background: #0052a3;
+    background: #0056b3;
   }
 
   &:disabled {
-    background: #ccc;
+    background: #6c757d;
     cursor: not-allowed;
+    opacity: 0.7;
   }
+  
+  transition: background 0.3s ease, opacity 0.3s ease;
 `;
+
+export const ErrorMessage = styled.div`
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+`;
+
